@@ -12,8 +12,9 @@ class ProducerServer(KafkaProducer):
 
     def generate_data(self):
         with open(self.input_file) as f:
-            for line in f:
-                message = self.dict_to_binary(line)
+            police_calls = json.load(f)
+            for police_call in police_calls:
+                message = self.dict_to_binary(police_call)
                 self.send(self.topic, message)
                 time.sleep(1)
 
