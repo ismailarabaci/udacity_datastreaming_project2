@@ -29,7 +29,6 @@ def run_spark_job(spark):
         .option("kafka.bootstrap.servers", "localhost:8082") \
         .option("subscribe", "police-calls") \
         .option("startingOffsets", "earliest") \
-        .option("maxOffsetsPerTrigger", 200) \
         .option("stopGracefullyOnShutdown", "true") \
         .load()
 
@@ -52,9 +51,7 @@ def run_spark_job(spark):
             .withWatermark('call_date_time', "1 minute")
 
     # count the number of original crime type
-    agg_df = distinct_table \
-    .dropna() \
-    .groupBy("original_crime_type_name").count()
+    agg_df = distinct_table.groupBy("original_crime_type_name").count()
 
     query = agg_df\
             .writeStream\
